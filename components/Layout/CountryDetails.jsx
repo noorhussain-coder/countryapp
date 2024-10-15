@@ -1,6 +1,9 @@
 import React, { useEffect, useState, useTransition } from 'react'
 import { getCountryIndData } from '../ApiPost/Apipost'
-import { useParams } from 'react-router-dom'
+import { NavLink, useParams } from 'react-router-dom'
+import Loader from '../Pages/Loader'
+
+
 const CountryDetails = () => {
   
   
@@ -12,21 +15,25 @@ const CountryDetails = () => {
     startTransition(async()=>{
         const res= await getCountryIndData(params.id)
         console.log(res)
-        if(res.status===200){
+        // SetCountry(res.data[0])
+        if(res.status ===200){
             SetCountry(res.data[0])
            
         }
-console.log("without Object",res.data[0].name.nativeName)
-console.log("with Object",Object.keys(res.data[0].name.nativeName))
+
         
     })
   },[])
-  
+  if(isPending) return <Loader/>
   console.log(params)
+
+
     return (
     <div className='detail-container'>
         <div className="card-detail">
-            <div className="detail-image">
+          {country &&(
+            <>
+              <div className="detail-image">
                 <img src={country.flags.svg} alt="" />
                 </div>  
                 <div className='card-content'>
@@ -85,7 +92,14 @@ console.log("with Object",Object.keys(res.data[0].name.nativeName))
                             {Object.keys(country.languages)}
                         </p>
                     </div>
-                    </div>          
+                    </div>  
+            </>
+          )}    
+    <div className="country-card ">
+        <NavLink to="/country">
+          <button className='btn'>Go back</button>
+        </NavLink>
+        </div>    
         </div>
     </div>
   )
